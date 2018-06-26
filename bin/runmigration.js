@@ -56,7 +56,7 @@ queryInterface.createTable('SequelizeMeta', {
 }).then(() => {
   const alreadyExecuted = [];
   try {
-    sequelize.query('SELECT * FROM "SequelizeMeta"', { type: sequelize.QueryTypes.SELECT })
+    sequelize.query('SELECT * FROM SequelizeMeta', { type: sequelize.QueryTypes.SELECT })
       .then((scripts) => {
         (scripts || []).forEach((script) => {
           alreadyExecuted[script.name] = true;
