@@ -19,6 +19,12 @@ const optionDefinitions = [
     { name: 'help', type: Boolean, description: 'Show this message' }
 ];
 
+let sequelizerc = {};
+
+try{
+    sequelizerc = require(path.resolve('./.sequelizerc'));
+}catch(e){}
+
 const options = commandLineArgs(optionDefinitions);
 
 if (options.help)
@@ -31,8 +37,8 @@ if (options.help)
     process.exit(0);    
 }
 
-let migrationsDir = path.join(process.env.PWD, options['migrations-path'] || 'migrations'),
-    modelsDir     = path.join(process.env.PWD, options['models-path'] || 'models');
+let migrationsDir = path.join(process.env.PWD, options['migrations-path'] || sequelizerc['migrations-path'] || 'migrations'),
+    modelsDir     = path.join(process.env.PWD, options['models-path'] || sequelizerc['models-path'] || 'models');
 
 
 // current state

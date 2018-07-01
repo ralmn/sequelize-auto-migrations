@@ -7,8 +7,13 @@ const Async = require('async');
 const Sequelize = require('sequelize');
 const migrate = require('../lib/migrate');
 
-const migrationsDir = path.join(process.env.PWD, 'migrations');
-const modelsDir = path.join(process.env.PWD, 'models');
+
+
+let sequelizerc = {};
+
+try{
+    sequelizerc = require(path.resolve('./.sequelizerc'));
+}catch(e){}
 
 const optionDefinitions = [
   {
@@ -24,10 +29,15 @@ const optionDefinitions = [
     name: 'list', alias: 'l', type: Boolean, description: 'Show migration file list (without execution)', defaultValue: false,
   },
   { name: 'help', type: Boolean, description: 'Show this message' },
+  { name: 'migrations-path', type: String, description: 'The path to the migrations folder' },
+  { name: 'models-path', type: String, description: 'The path to the models folder' },
 ];
 
 const options = commandLineArgs(optionDefinitions);
 
+
+const migrationsDir = path.join(process.env.PWD, options['migrations-path'] || sequelizerc['migrations-path'] || 'migrations');
+const modelsDir = path.join(process.env.PWD, options['models-path'] || sequelizerc['models-path'] || 'models');
 
 if (options.help) {
   console.log('Simple sequelize migration execution tool\n\nUsage:');
@@ -56,7 +66,7 @@ queryInterface.createTable('SequelizeMeta', {
 }).then(() => {
   const alreadyExecuted = [];
   try {
-    sequelize.query('SELECT * FROM SequelizeMeta', { type: sequelize.QueryTypes.SELECT })
+    sequelize.query('SELECT * FROM "SequelizeMeta"', { type: sequelize.QueryTypes.SELECT })
       .then((scripts) => {
         (scripts || []).forEach((script) => {
           alreadyExecuted[script.name] = true;
