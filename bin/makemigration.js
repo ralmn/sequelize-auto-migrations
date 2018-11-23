@@ -23,7 +23,10 @@ let sequelizerc = {};
 
 try{
     sequelizerc = require(path.resolve('./.sequelizerc'));
-}catch(e){}
+}catch(e){
+    console.log('error', e);
+    process.exit(2);
+}
 
 const options = commandLineArgs(optionDefinitions);
 
